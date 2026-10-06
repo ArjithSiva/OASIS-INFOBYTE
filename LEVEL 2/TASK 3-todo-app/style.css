@@ -1,0 +1,128 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0
+}
+
+body {
+    background: #eef1f7;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    padding: 1.5rem 1rem
+}
+
+.app {
+    max-width: 560px;
+    margin: auto;
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 14px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .1)
+}
+
+h1 {
+    text-align: center;
+    color: #3b3f8c;
+    margin-bottom: 1rem
+}
+
+h2 {
+    font-size: 1.1rem;
+    margin: 1.2rem 0 .5rem;
+    color: #333
+}
+
+.count {
+    font-size: .85rem;
+    background: #e3e6ff;
+    color: #3b3f8c;
+    border-radius: 999px;
+    padding: .1rem .6rem;
+    margin-left: .4rem
+}
+
+.add {
+    display: flex;
+    gap: .5rem
+}
+
+input[type=text] {
+    flex: 1;
+    padding: .7rem;
+    border: 1px solid #c5c9e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    min-width: 0
+}
+
+button {
+    border: none;
+    border-radius: 8px;
+    padding: .5rem .8rem;
+    cursor: pointer;
+    background: #3b3f8c;
+    color: #fff;
+    font-size: .9rem
+}
+
+button:hover {
+    filter: brightness(1.15)
+}
+
+ul {
+    list-style: none
+}
+
+li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+    padding: .7rem;
+    border: 1px solid #e2e4f0;
+    border-radius: 8px;
+    margin-bottom: .5rem
+}
+
+.text {
+    flex: 1;
+    word-break: break-word
+}
+
+.done .text {
+    text-decoration: line-through;
+    color: #888
+}
+
+.time {
+    width: 100%;
+    font-size: .75rem;
+    color: #888
+}
+
+.edit-input {
+    flex: 1;
+    padding: .4rem;
+    border: 1px solid #3b3f8c;
+    border-radius: 6px
+}
+
+.btn-done {
+    background: #27ae60
+}
+
+.btn-edit {
+    background: #e08a1e
+}
+
+.btn-del {
+    background: #c0392b
+}
+
+.empty {
+    color: #888;
+    font-style: italic;
+    text-align: center;
+    padding: .8rem;
+    border: 1px dashed #ccd;
+    border-radius: 8px
+}

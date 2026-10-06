@@ -1,0 +1,128 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    line-height: 1.7;
+    color: #222
+}
+
+h1,
+h2,
+blockquote {
+    font-family: Georgia, 'Times New Roman', serif
+}
+
+section,
+header,
+footer {
+    padding: 3rem 1rem
+}
+
+section>*,
+header>* {
+    max-width: 760px;
+    margin-inline: auto
+}
+
+.title {
+    background: #0b3d6b;
+    color: #fff;
+    text-align: center
+}
+
+.title h1 {
+    font-size: clamp(2rem, 6vw, 3.2rem)
+}
+
+.tagline {
+    font-style: italic;
+    margin-top: .5rem;
+    color: #ffd27a
+}
+
+.portrait {
+    background: #f4efe6;
+    text-align: center
+}
+
+img {
+    width: min(340px, 100%);
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .25);
+    background: #ddd;
+    min-height: 200px
+}
+
+figcaption {
+    font-size: .85rem;
+    color: #666;
+    margin-top: .5rem
+}
+
+.bio {
+    background: #fff
+}
+
+.bio h2,
+.timeline h2 {
+    color: #0b3d6b;
+    margin-bottom: 1rem
+}
+
+.bio p {
+    margin-bottom: 1rem
+}
+
+.timeline {
+    background: #e9f1f8
+}
+
+.timeline ol {
+    list-style: none;
+    display: grid;
+    gap: .8rem
+}
+
+.timeline li {
+    background: #fff;
+    padding: 1rem;
+    border-left: 5px solid #f0a30a;
+    border-radius: 6px
+}
+
+.timeline strong {
+    color: #0b3d6b;
+    margin-right: .5rem
+}
+
+.quote {
+    background: #0b3d6b;
+    color: #fff
+}
+
+blockquote {
+    font-size: 1.5rem;
+    font-style: italic;
+    border-left: 5px solid #f0a30a;
+    padding-left: 1rem
+}
+
+cite {
+    display: block;
+    margin-top: .8rem;
+    font-size: 1rem;
+    color: #ffd27a
+}
+
+footer {
+    background: #111;
+    color: #bbb;
+    text-align: center;
+    font-size: .9rem
+}

@@ -1,0 +1,69 @@
+.spotlight-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  padding: 1.25em;
+  border-radius: 0.85rem;
+  border: 1px solid var(--color-line);
+  background: color-mix(in srgb, var(--color-surface-alt) 55%, transparent);
+  overflow: hidden;
+  isolation: isolate;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.25s ease, transform 0.25s ease;
+  --spotlight-x: 50%;
+  --spotlight-y: 50%;
+}
+
+.spotlight-card:hover {
+  border-color: var(--color-line-strong);
+  transform: translateY(-2px);
+}
+
+.spotlight-card__glow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(circle 220px at var(--spotlight-x) var(--spotlight-y), var(--spotlight-color), transparent 80%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+/* A thin gradient ring that only lights up where the cursor is, on top of
+   the card's normal border — same masking trick MagicBento's card glow
+   uses, kept consistent site-wide. */
+.spotlight-card__border {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(circle 220px at var(--spotlight-x) var(--spotlight-y), var(--spotlight-color), transparent 70%);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.spotlight-card:hover .spotlight-card__border {
+  opacity: 1;
+}
+
+.spotlight-card__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  min-width: 0;
+  width: 100%;
+}

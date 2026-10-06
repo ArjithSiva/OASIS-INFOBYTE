@@ -1,0 +1,81 @@
+
+NAME
+Arjith A
+
+CONTACT 
+Mobile: +919600071192
+Email: aarjith2006@gmail.com  
+Address: Pallikaranai, Chennai - 600100
+
+PROFILE
+Linkedin: https://www.linkedin.com/in/arjithsiva/
+GitHub: https://github.com/ArjithSiva
+Portfolio: ArjithSiva.github.io/portfolio
+
+CODING PLATFORMS
+https://www.skillrack.com/faces/resume.xhtml?id=495479&key=56fc4e6023d7aa095e12164d3a52ea7ff1646527
+https://leetcode.com/u/ArjithSiva/
+https://www.hackerrank.com/profile/aarjith2006
+
+
+EDUCATION
+B.E. in Computer Science and Engineering (IoT)
+Sri Sairam Engineering College,
+
+CGPA: 8.08
+Expected Graduation: May 2028
+
+ABOUT ME
+Computer Science (IoT) undergraduate with hands-on experience developing web applications, database systems, and automation tools. Passionate about AI-assisted development, open-source software, Linux, and building practical solutions that solve real-world problems.
+
+SKILLS
+Programming Languages: Python, Java, C++ (Basic), Embedded C (Basic), Bash (Linux), PowerShell Scripting Language
+Web Development Kit: HTML5, CSS (Tailwind, Bootstrap), JavaScript, Node.js, React (Learning), Express (Learning)
+IoT Technologies: Arduino,  ESP32, Sensors Integration.
+Databases: MySQL, MongoDB, Firebase (Learning)
+Tools: VS Code, Git, GitHub, Arduino IDE, Linux, Docker (Learning)
+
+OTHER SKILLS
+Automation using task scheduler and Vbs scripts, Good at Monitoring and Documentation, Like code Refactoring, 
+Have Knowledge about Networking and how to lay Cables and everything by my fathers business and know how to setup WIFI and dvr and cctv cameras and setting up Firewall 
+Other Skills include PC Building have built 3 PC's and Upgrading OEM All in Ones and PC and Laptops and have upgraded ram and SSD in multiple Devices 
+I use VS Code with Continue and Roo Code, Claude Code, Antigravity Agent, Aider Chat via Ollama running Qwen Coder7B
+
+PROJECT DONE FOR NANOTEC SOLUTIONS AND EXPERIENCE
+NANOTEC SOLUTIONS is My Fathers Company and he basically gave me these projects and don't know how to update it to my resume but these are completely done by me and Websites hosted are all FTP Hosted Via GoDaddy Domains and the Python Database Managers also Have the Use of AI like Claude and Gemini Pro
+http://ayyavaigundar.in - this is the website for the Temple that we go. done around 2023 first and then update again in 2026 with new content and style and animations
+Temple Devotee Management System - this local MySQL DB management system is created to monitor the income and spending of the temple and managing the Donations and Devotee Database and created using Python and sqlalchemy created and in use by 2026
+http://aacon.in - this is a project taken by our company to update a old Aladi Aruna College of Nursing Tenkasi form old site to a new modern one 2025
+http://srinidhiassociate.in - this is a project taken by our company for a client and created on 2025
+http://hospitalsuppliars.co.in - this is a project taken by our company for a client and created on 2024
+http://nanotecsoft.in/ - this is my dad's company and redesigning his website for him in 2026 
+HMS - MRD Krishnagiri - This a uses Python with Flask pyodbc, pandas Modules and ODBC Driver 18 Driver to connect modern systems and websites to Old MSSQL 2005 Server and also has the ability to import data from .xls .xlsx and .csv to import patient data from their new system to the old one 
+HMS - Puthurkattu Vadapalani - This is the Biggest Project Under taken by me with Puthurkattu Bone Joint Centre to create their Database management system for patients and billing and also migrating their existing MSSQL Server 2005 to MySQL 8.0 and with Python and Flask as the framework and using modules like request for Pay4Sms Api's to send Mobile Sms after the billing and the amount with the patient name and a remainder and welcome message in WhatsApp with Puthurkattu Bone Joint Centre Vadapalani Verified sending Treatment Videos and their Treatments this is the Largest Project Undertaking by Me and in operation in 2026 
+
+COLLEGE FINAL YEAR PROJECT 
+Team Members: Saravanan S N, Arjith A, Muthukumar Vignesh S
+Project Name: Signify
+ a low-cost wearable smart glove that translates Indian Sign Language (ISL) hand gestures into real-time speech using flex and motion sensors, a microcontroller, and wireless communication. The system aims to bridge the communication gap between speech/hearing-impaired individuals and others by providing a practical, portable, and more scalable alternative to existing sign language recognition methods.
+
+CERTIFICATIONS
+Completed professional certifications and technical courses through Coursera, NPTEL, Spoken Tutorial (IIT Bombay), IEEE BLP,
+and MY Bharat
+Currently learning advanced database technologies including SQL, MongoDB, and Firebase.
+
+ACHIEVEMENTS & ACTIVITIES
+Participated in Sustainable Development Goal (SDG)-themed hackathons.
+Hosted as the Speaker Skill Enrichment Program Organized by my department for my juniors on topic DEEP DIVE INTO WINDOWS TOOL AND UTILITIES
+Student Coordinator for multiple Skill Enrichment Program Organized by my department in College 
+Consistently on Top of skillrack Points in Department from the Start and have multiple Skillrack Certificate
+
+LANGUAGES
+Tamil | English | Hindi can understand | Japanese Duolingo level 16 320+ days streak 
+
+HOBBIES 
+I Mostly spend my free time Trying Various Linux Distros and Trouble Shooting or Helping out my Father's Business or Trying out Various Windows Tools or application I found online 
+Testing out Various Local LLM's and Various Applications using it like Roo Code or Aider Chat and I watch Anime a lot if not these 
+
+EXTRACURRICULAR SKILLS
+Badminton, Swimming, Driving (Got Driving License for both Car and Bike and know to Drive them very well)
+Learnt when I was a kid: Skating, Karate, Silambam, Drawing/ Painting 
+

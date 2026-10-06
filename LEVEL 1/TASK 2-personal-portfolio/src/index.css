@@ -1,0 +1,478 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------- *
+ * Design tokens
+ *
+ * Two modes, one content layer — both dark, both built around Solo
+ * Leveling's "system window" look, differing only in hue:
+ *   Shadow Mode  (default) — void black, violet hunter energy (S2)
+ *   System Mode             — deep navy, vivid blue interface energy (S1)
+ *
+ * Tokens are real CSS custom properties (not just Tailwind config), so a
+ * single [data-theme] attribute swap on <html> recolors every `bg-surface`,
+ * `text-ink`, etc. utility below instantly, and we can transition them.
+ * ---------------------------------------------------------------------- */
+@theme {
+  /* One family site-wide, per design brief — Lato doubles as the display,
+     body, and mono voice so headings, paragraphs, and labels all read as
+     the same "system" typeface instead of three different ones. Inter
+     stays only as a fallback for any glyph Lato doesn't cover.
+     (Note: the actual Solo Leveling system-window text uses Trueno Round /
+     Circe Rounded Extra Bold / Caros Soft, all commercial fonts not
+     available for free web use — Lato is the free stand-in.) */
+  --font-display: "Lato", "Inter", sans-serif;
+  --font-body: "Lato", "Inter", system-ui, sans-serif;
+  --font-mono: "Lato", "Inter", ui-monospace, monospace;
+
+  --color-void: #030005;
+  --color-surface: #08000f;
+  --color-surface-alt: #16052b;
+  --color-surface-raised: #1c0a35;
+
+  --color-accent: #7c3aed;
+  --color-accent-2: #8b5cf6;
+  --color-accent-3: #a855f7;
+  --color-accent-soft: #c084fc;
+  /* Text color for content that sits *on top of* an accent-colored
+     background (e.g. primary button labels) — kept separate from
+     void/ink because what contrasts well against the page background
+     doesn't always contrast well against the accent itself. */
+  --color-on-accent: #030005;
+
+  --color-ink: #f3ecff;
+  --color-ink-muted: #b3a4d4;
+  --color-ink-faint: #6f6390;
+
+  --color-line: rgb(139 92 246 / 0.22);
+  --color-line-strong: rgb(168 85 247 / 0.5);
+
+  --shadow-glow: 0 0 40px -8px rgb(139 92 246 / 0.55);
+
+  --animate-drift: drift 22s ease-in-out infinite;
+  --animate-pulse-slow: pulse-slow 4s ease-in-out infinite;
+  --animate-scan: scan 3s linear infinite;
+  --animate-flicker-in: flicker-in 0.9s ease-out both;
+  --animate-glow-pulse: glow-pulse 3.5s ease-in-out infinite;
+}
+
+:root[data-theme="system"] {
+  /* Solo Leveling S1 palette — a light sky-blue page (per design brief:
+     this mode is now a genuine light theme) with deep navy doing the
+     structural/text work. The system-window panels themselves are NOT
+     driven by these tokens for their fill/text — see the `.sw-panel`
+     override below, which keeps every box the same dark "system window"
+     regardless of how light the surrounding page is, matching the
+     reference (a glowing dark HUD window against a light scene). */
+  --color-void: #d5f0ff;
+  --color-surface: #d5f0ff;
+  --color-surface-alt: #eaf7ff;
+  --color-surface-raised: #ffffff;
+
+  /* Navy + Electric Blue — Solo Leveling S1 "System" interface energy.
+     Pushed noticeably more saturated/vivid than the previous pass (which
+     still read as washed-out next to Shadow Mode's violet): deeper, richer
+     navy as the anchor, and a properly electric cyan-blue for glow/accent
+     work instead of a muted mid-blue. The icy-blue page background above
+     is untouched; only the accent family changes. */
+  --color-accent: #0a2f6b;
+  --color-accent-2: #0ea5ec;
+  --color-accent-3: #22c3ff;
+  --color-accent-soft: #8fe3ff;
+  --color-on-accent: #eaf2ff;
+
+  --color-ink: #071c3d;
+  --color-ink-muted: #2c4d80;
+  --color-ink-faint: #5c76a3;
+
+  --color-line: rgb(14 165 236 / 0.22);
+  --color-line-strong: rgb(14 165 236 / 0.48);
+
+  --shadow-glow: 0 0 44px -8px rgb(14 165 236 / 0.5);
+}
+
+/* The system-window panel keeps its dark-navy "box" look in System Mode
+   even though the page around it is now light — re-establish the same
+   dark palette + icy-blue glow that used to live at the root, scoped to
+   anything inside a panel. Shadow Mode doesn't need this: its page is
+   already dark, so panels already match without an override. */
+:root[data-theme="system"] .sw-panel {
+  --color-surface: #051530;
+  --color-surface-alt: #0a2148;
+  --color-surface-raised: #0f2d5e;
+
+  --color-accent: #0a2f6b;
+  --color-accent-2: #0ea5ec;
+  --color-accent-3: #22c3ff;
+  --color-accent-soft: #8fe3ff;
+  --color-on-accent: #eaf2ff;
+
+  --color-ink: #eaf2ff;
+  --color-ink-muted: #9db3d9;
+  --color-ink-faint: #5c749f;
+
+  --color-line: rgb(14 165 236 / 0.24);
+  --color-line-strong: rgb(14 165 236 / 0.52);
+
+  --shadow-glow: 0 0 44px -8px rgb(14 165 236 / 0.6);
+}
+
+* {
+  border-color: var(--color-line);
+}
+
+/* Tailwind's `shadow-glow` utility splits the @theme box-shadow token into
+   a shape part plus `var(--tw-shadow-color, <fallback>)`, and that
+   fallback is the token's color AT BUILD TIME — from the base (Shadow
+   Mode, violet) declaration — not a live reference to --shadow-glow.
+   Since nothing ever sets --tw-shadow-color, every hover:shadow-glow use
+   was permanently showing that baked-in violet, regardless of theme.
+   This class applies the box-shadow directly from --shadow-glow instead,
+   so it always reflects whichever theme is active. */
+.hover-glow {
+  transition: box-shadow 0.3s ease;
+}
+.hover-glow:hover:not(:disabled) {
+  box-shadow: var(--shadow-glow);
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--color-surface);
+  overflow-x: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  transition: background-color 0.6s ease, color 0.6s ease;
+  -webkit-font-smoothing: antialiased;
+  /* Several decorative elements intentionally bleed past their own box
+     (sw-panel's top/bottom wing bars, the blurred panel glow, the mobile
+     menu's 100vw fixed layer) — harmless on wide screens but on narrow
+     mobile viewports that bleed was creating a few extra px of real
+     horizontal scroll, cutting the page off on the right. This clips the
+     bleed without touching any of those components' own positioning. */
+  overflow-x: hidden;
+}
+
+/* The hand-drawn cursor dot is a nice touch on precision pointers, but
+   only makes sense there — always off for touch input and for anyone
+   who's asked for reduced motion, regardless of which mode is active.
+   !important guarantees this wins over every cursor:pointer declaration
+   in the app (buttons, links, chips, nav items, etc.) — without it, a
+   plain-specificity rule can lose to something equally specific loaded
+   later, letting the native hand cursor sneak back in next to the custom
+   crosshair. */
+@media (hover: hover) and (pointer: fine) {
+  html[data-cursor="custom"], html[data-cursor="custom"] * {
+    cursor: none !important;
+  }
+}
+
+::selection {
+  background: var(--color-accent-2);
+  color: var(--color-void);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-surface);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-accent);
+  border-radius: 999px;
+}
+
+/* Visible keyboard focus everywhere, in both themes */
+:focus-visible {
+  outline: 2px solid var(--color-accent-3);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.text-glow {
+  text-shadow: 0 0 24px var(--color-line-strong);
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  color: var(--color-accent-3);
+}
+
+@keyframes drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(2%, -3%, 0) scale(1.06); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes flicker-in {
+  0% { opacity: 0; filter: blur(6px); }
+  60% { opacity: 1; filter: blur(0); }
+  75% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+/* ========================================================================
+ * SYSTEM WINDOW — the Solo Leveling "status window" panel
+ *
+ * Every card site-wide is built from this. Layers, always used together
+ * (see components/ui/SystemPanel.tsx, which renders exactly this markup so
+ * no component hand-rolls it):
+ *
+ *   .sw-panel            positioning root. padding-top/bottom are a few
+ *                        px LESS than the bars' shortest extent, so the
+ *                        content box's own corners sit BEHIND the bars
+ *                        (see z-index note on .sw-panel__bar) instead of
+ *                        just touching them — the bars read as covering
+ *                        the box's top/bottom, not as a separate piece
+ *                        floating next to it.
+ *   .sw-panel__glow      an unclipped, blurred colour wash behind
+ *                        everything.
+ *   .sw-panel__bar       two different shapes, both z-index:2 — above
+ *                        .sw-panel__frame's z-index:1 — so they visually
+ *                        cover the box's corners wherever padding leaves
+ *                        it underneath them. Both now overhang PAST the
+ *                        box on every side by --sw-overhang — the same
+ *                        overhang the top-right corner always had — with
+ *                        each shape's own construction otherwise
+ *                        untouched, just re-anchored to the box edges
+ *                        (which have moved --sw-overhang px in from each
+ *                        bar's own edges):
+ *
+ *                        TOP — flush square tip on the left (now
+ *                        overhanging, where it used to sit flush with the
+ *                        box), a short flat run, ONE angled step down onto
+ *                        a taller flat run for the rest of the width, then
+ *                        the original overhang + diagonal chamfer corner
+ *                        on the right (the "inverted trapezium") —
+ *                        unchanged.
+ *
+ *                        BOTTOM — a plain rectangle, now overhanging on
+ *                        every side, with exactly one corner cut: the
+ *                        bottom-left, chamfered diagonally (a right-angle
+ *                        triangle removed, background shows through) at
+ *                        the same size, still anchored to the box's own
+ *                        corner rather than the bar's new outer edge.
+ *   .sw-panel__trace     a thin "circuit trace" tick-mark line down the
+ *                        left and right edges of the content box.
+ *   .sw-panel__frame     the gradient border box — a plain rectangle, no
+ *                        corner cut.
+ *   .sw-panel__inner     the white-outlined content box everything sits
+ *                        in — also a plain rectangle.
+ *
+ * Usage: see SystemPanel.tsx — or just <SystemPanel>content</SystemPanel>.
+ * ======================================================================== */
+.sw-panel {
+  --sw-bar-hi: 24px;
+  --sw-bar-lo: 36px;
+  --sw-bottom-bar: 28px;
+  --sw-seg: 30%;
+  --sw-diag: 18px;
+  --sw-chamfer: 20px;
+  --sw-overhang: 16px;
+  --sw-chamfer-bl: 22px;
+  --sw-overlap: 4px;
+  position: relative;
+  isolation: isolate;
+  /* Padding is deliberately LESS than the bars' own height (not equal to
+     it) so the content box's top/bottom corners sit BEHIND the bars
+     (frame z-index:1, bars z-index:2) rather than starting exactly where
+     the bars end. Where a bar is at its shortest (the top bar's "hi"
+     segment), the box is hidden behind it with a few px of overlap
+     instead of just touching it — so there's no sliver of gap revealing
+     the box's own corner underneath, and the bar reads as covering the
+     box rather than a separate piece sitting next to it. */
+  padding-top: calc(var(--sw-bar-hi) - var(--sw-overlap));
+  padding-bottom: calc(var(--sw-bottom-bar) - var(--sw-overlap));
+}
+.sw-panel--sm {
+  --sw-bar-hi: 15px;
+  --sw-bar-lo: 22px;
+  --sw-bottom-bar: 18px;
+  --sw-seg: 28%;
+  --sw-diag: 11px;
+  --sw-chamfer: 14px;
+  --sw-overhang: 10px;
+  --sw-chamfer-bl: 15px;
+  --sw-overlap: 2px;
+}
+
+.sw-panel__glow {
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg, var(--color-accent-3), var(--color-accent) 70%);
+  filter: blur(18px);
+  opacity: 0.32;
+  pointer-events: none;
+  z-index: 0;
+  animation: var(--animate-glow-pulse);
+}
+@media (prefers-reduced-motion: reduce) {
+  .sw-panel__glow {
+    animation: none;
+    opacity: 0.4;
+  }
+}
+
+.sw-panel__bar {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(90deg, var(--color-accent-3), var(--color-accent-soft) 55%, var(--color-accent-3));
+  /* drop-shadow, not box-shadow: box-shadow is cast from the element's
+     full rectangular box and ignores clip-path entirely, which used to
+     bleed a faint glow into whichever corner the clip-path had cut
+     away (visible as a stray glow filling the bottom-left notch instead
+     of leaving it clean). drop-shadow follows the actual rendered
+     (clipped) silhouette, so the glow now stops exactly at the cut. */
+  filter: drop-shadow(0 0 10px var(--color-accent-3)) drop-shadow(0 0 20px var(--color-accent-3))
+    drop-shadow(0 0 8px var(--color-accent-soft));
+  transition: filter 0.3s ease;
+}
+/* Same colors as the resting state, just a bigger/softer glow — no
+   brightness() or hue shift, so the bars don't change color on hover,
+   only how much they glow — boosted well past the resting state so it's
+   unmistakable. */
+.sw-panel:hover > .sw-panel__bar {
+  filter: drop-shadow(0 0 16px var(--color-accent-3)) drop-shadow(0 0 38px var(--color-accent-3))
+    drop-shadow(0 0 60px var(--color-accent-3)) drop-shadow(0 0 18px var(--color-accent-soft));
+}
+.sw-panel__bar--top {
+  top: 0;
+  left: calc(-1 * var(--sw-overhang));
+  right: calc(-1 * var(--sw-overhang));
+  height: var(--sw-bar-lo);
+  /* Same 7-point shape as before — the step/diagonal in the middle is
+     byte-for-byte the same construction, just shifted right by the new
+     left overhang so it still lines up with the box underneath. The only
+     visible change is the left end: it used to be a flush square corner
+     sitting exactly on the box's edge, and now that same flush square
+     corner sits --sw-overhang px further out, with the flat "hi" run
+     simply extended to reach it (no new diagonal added). */
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% var(--sw-chamfer),
+    calc(100% - var(--sw-overhang)) var(--sw-bar-lo),
+    calc(var(--sw-overhang) + var(--sw-seg)) var(--sw-bar-lo),
+    calc(var(--sw-overhang) + var(--sw-seg) - var(--sw-diag)) var(--sw-bar-hi),
+    0 var(--sw-bar-hi)
+  );
+}
+.sw-panel__bar--bottom {
+  bottom: 0;
+  left: calc(-1 * var(--sw-overhang));
+  right: calc(-1 * var(--sw-overhang));
+  height: var(--sw-bottom-bar);
+  /* Same notch construction as the very original design — a plain
+     right-angle triangle removed from the corner — just applied to the
+     bar's own (wider, overhanging) corner instead of the box's edge: the
+     whole bar extends fully solid past the box on every side, and the
+     triangle is cut from that extended shape's own bottom-left tip. */
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 100%,
+    var(--sw-chamfer-bl) 100%,
+    0 calc(100% - var(--sw-chamfer-bl))
+  );
+}
+
+.sw-panel__trace {
+  position: absolute;
+  top: var(--sw-bar-hi);
+  bottom: var(--sw-bottom-bar);
+  width: 3px;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.6;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--color-accent-3) 0, var(--color-accent-3) 3px,
+    transparent 3px, transparent 13px
+  );
+}
+.sw-panel__trace--left {
+  left: -1px;
+}
+.sw-panel__trace--right {
+  right: -1px;
+}
+
+.sw-panel__frame {
+  position: relative;
+  z-index: 1;
+  padding: 2px;
+  height: 100%;
+  background: linear-gradient(135deg, var(--color-accent-3), var(--color-accent) 55%, var(--color-accent-3));
+}
+
+.sw-panel__inner {
+  height: 100%;
+  background: var(--color-surface-alt);
+  border: 1px solid rgb(255 255 255 / 0.5);
+}
+
+/* ------------------------------------------------------------------------
+ * Typewriter text — used for the Quest Board's title/tagline when its
+ * content swaps (see components/ui/TypewriterText.tsx). Fast reveal +
+ * a settling glow, not a per-letter animation (keeps it cheap).
+ * ---------------------------------------------------------------------- */
+.type-glow {
+  animation: type-glow-settle 0.5s ease-out both;
+}
+@keyframes type-glow-settle {
+  0% { text-shadow: 0 0 18px var(--color-accent-3), 0 0 6px var(--color-accent-soft); }
+  100% { text-shadow: 0 0 0 transparent; }
+}
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 0.9em;
+  margin-left: 2px;
+  background: var(--color-accent-3);
+  vertical-align: text-bottom;
+  animation: pulse-slow 0.8s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .type-glow {
+    animation: none;
+  }
+  .typewriter-cursor {
+    animation: none;
+  }
+}

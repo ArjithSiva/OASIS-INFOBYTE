@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link id="favicon" rel="icon" type="image/svg+xml" href="%BASE_URL%favicon-shadow.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#08000F" />
+    <script>
+      // Runs before first paint so light-device visitors land on System Mode
+      // (and dark-device visitors on Shadow Mode) without a flash of the
+      // other theme. Mirrors getInitialMode() in src/hooks/useTheme.tsx —
+      // keep the two in sync if that logic ever changes. Also swaps the
+      // favicon to match, so there's no flash of the wrong-color tab icon
+      // either (the runtime swap on toggle lives in useTheme.tsx).
+      (function () {
+        try {
+          var stored = localStorage.getItem('portfolio-mode');
+          var mode =
+            stored === 'shadow' || stored === 'system'
+              ? stored
+              : window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches
+                ? 'system'
+                : 'shadow';
+          document.documentElement.setAttribute('data-theme', mode);
+          var favicon = document.getElementById('favicon');
+          if (favicon) favicon.href = '%BASE_URL%favicon-' + mode + '.svg';
+        } catch (e) {}
+      })();
+    </script>
+    <title>Arjith A — Full Stack Developer</title>
+    <meta
+      name="description"
+      content="Arjith A — Computer Science (IoT) undergraduate and full-stack developer building clinic management systems, temple administration software, and IoT projects in Chennai, India."
+    />
+    <meta property="og:title" content="Arjith A — Full Stack Developer" />
+    <meta
+      property="og:description"
+      content="Database systems, web applications, and automation tools — built and shipped for real businesses."
+    />
+    <meta property="og:type" content="website" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Cinzel:wght@400;600&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

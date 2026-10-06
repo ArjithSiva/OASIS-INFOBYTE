@@ -1,0 +1,280 @@
+.card-grid {
+  display: grid;
+  grid-auto-flow: dense;
+  gap: 1.1em;
+  padding: 0;
+  max-width: 100%;
+  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.5rem);
+}
+
+.magic-bento-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 1em;
+  position: relative;
+  min-height: 210px;
+  width: 100%;
+  max-width: 100%;
+  padding: 1.6em 1.5em;
+  border-radius: 16px;
+  border: 1px solid var(--color-line-strong);
+  background: var(--color-surface-alt);
+  font-weight: 300;
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  --glow-x: 50%;
+  --glow-y: 50%;
+  --glow-intensity: 0;
+  --glow-radius: 200px;
+}
+
+.magic-bento-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+}
+
+.magic-bento-card__header,
+.magic-bento-card__content {
+  display: flex;
+  position: relative;
+  color: var(--color-ink);
+}
+
+.magic-bento-card__header {
+  gap: 0.75em;
+  justify-content: space-between;
+}
+
+.magic-bento-card__content {
+  flex-direction: column;
+}
+
+.magic-bento-card__label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-accent-3);
+}
+
+.magic-bento-card__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin: 0 0 0.6em;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.magic-bento-card__description {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--color-ink-muted);
+}
+
+/* Skills render as small wrapping tag chips rather than a paragraph — a
+   plain clamped description reads badly once a card holds 4-6 items. Each
+   card is now a single specialization (Web Dev, Hardware, etc. all split
+   into their own boxes), so the list just needs room to breathe. */
+.magic-bento-card__description .skill-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6em 0.55em;
+}
+
+.magic-bento-card__description .skill-chip {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.45em 0.85em;
+  border: 1px solid var(--color-line-strong);
+  border-radius: 999px;
+  color: var(--color-ink-muted);
+  background: color-mix(in srgb, var(--color-surface-raised) 60%, transparent);
+  white-space: nowrap;
+  /* .skill-chip is now a <button>, not a plain <li> — reset the defaults */
+  font: inherit;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.magic-bento-card__description .skill-chip:hover {
+  color: var(--color-ink);
+  border-color: var(--color-accent-3);
+}
+
+.magic-bento-card__description .skill-chip[aria-pressed='true'] {
+  color: var(--color-on-accent);
+  background: var(--color-accent-3);
+  border-color: var(--color-accent-3);
+}
+
+.skill-detail-panel {
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+  padding: 1.1em 1.3em;
+  background: color-mix(in srgb, var(--color-surface-raised) 45%, transparent);
+  min-height: 4.5em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.skill-detail-panel__placeholder {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-ink-faint);
+  font-style: italic;
+}
+
+.skill-detail-panel__eyebrow {
+  margin: 0 0 0.3em;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent-3);
+}
+
+.skill-detail-panel__title {
+  margin: 0 0 0.4em;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--color-ink);
+}
+
+.skill-detail-panel__desc {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--color-ink-muted);
+}
+
+@media (max-width: 599px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .magic-bento-card {
+    width: 100%;
+    min-height: 170px;
+  }
+}
+
+@media (min-width: 600px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Wide cards (Web Development, Application, Hardware, Agents & Tools) span
+   2 columns instead of 1 — this works unchanged at both the 2-column
+   (tablet) and 4-column (desktop) breakpoints, and simply collapses to the
+   single mobile column since span:2 clamps to whatever tracks exist. Gives
+   the categories with more chips (and Hardware, whose longest label was
+   getting clipped in a narrow box) real room to lay out without wrapping
+   awkwardly. */
+.magic-bento-card--wide {
+  grid-column: span 2;
+}
+
+/* Mobile: span 2 does NOT clamp on a one-column grid — it creates a hidden
+   implicit second column, which squeezes the non-wide cards into a narrow
+   sliver beside their neighbours. Reset the span so every card is a single,
+   full-width row, and use minmax(0, 1fr) so long chips can't stretch the
+   track. Must stay AFTER the .magic-bento-card--wide rule above. */
+@media (max-width: 599px) {
+  .card-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .magic-bento-card--wide {
+    grid-column: auto;
+  }
+}
+
+/* Border glow effect — driven by --glow-color, which the component sets
+   per-render from the active theme's accent, so it flips between violet
+   and electric-blue automatically instead of being pinned to one hue. */
+.magic-bento-card--border-glow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 6px;
+  background: radial-gradient(
+    var(--glow-radius) circle at var(--glow-x) var(--glow-y),
+    rgba(var(--glow-color), calc(var(--glow-intensity) * 0.8)) 0%,
+    rgba(var(--glow-color), calc(var(--glow-intensity) * 0.4)) 30%,
+    transparent 60%
+  );
+  border-radius: inherit;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.magic-bento-card--border-glow:hover::after {
+  opacity: 1;
+}
+
+.magic-bento-card--border-glow:hover {
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.35),
+    0 0 30px rgba(var(--glow-color), 0.25);
+}
+
+.particle-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.particle::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: rgba(var(--glow-color), 0.2);
+  border-radius: 50%;
+  z-index: -1;
+}
+
+.particle-container:hover {
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.25),
+    0 0 30px rgba(var(--glow-color), 0.2);
+}
+
+/* Global spotlight styles */
+.global-spotlight {
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+  z-index: 200 !important;
+  pointer-events: none;
+}
+
+.bento-section {
+  position: relative;
+  user-select: none;
+}
