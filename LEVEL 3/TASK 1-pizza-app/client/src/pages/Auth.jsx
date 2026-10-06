@@ -1,71 +1,147 @@
 import { useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { api, saveSession } from '../api.js';
+import PizzaArt, { Logo } from '../PizzaArt.jsx';
 
-function Card({ title, children }) {
+function Shell({ title, lead, children }) {
   return (
-    <div className="min-h-[80vh] grid place-items-center p-4">
-      <div className="w-full max-w-sm bg-white rounded-xl shadow p-6">
-        <h1 className="text-2xl font-bold text-red-700 mb-4 text-center">{title}</h1>{children}
-      </div>
+    <div className="grid min-h-screen md:grid-cols-[1.05fr_1fr]">
+      <aside className="gingham hidden place-items-center p-10 md:grid">
+        <div className="grid justify-items-center gap-7">
+          <div className="rounded-full bg-paper p-6 shadow-[0_22px_44px_-14px_rgba(18,57,43,.5)]">
+            <PizzaArt size={300} base="Classic Hand-Tossed" sauce="Tomato Marinara" cheese="Mozzarella" veggies={['Tomato', 'Olives', 'Capsicum']} />
+          </div>
+          <p className="max-w-[18rem] bg-paper px-5 py-3 text-center font-display text-xl font-bold leading-snug text-basil">
+            Pick every layer, then watch it leave the kitchen.
+          </p>
+        </div>
+      </aside>
+      <main className="grid place-items-center px-6 py-12">
+        <div className="w-full max-w-sm">
+          <Link to="/login" className="text-basil" aria-label="Forno home"><Logo /></Link>
+          <h1 className="mt-10 text-4xl font-extrabold text-basil">{title}</h1>
+          <p className="mb-8 mt-2 text-mute">{lead}</p>
+          {children}
+        </div>
+      </main>
     </div>
   );
 }
-const Field = props => <input className="w-full border rounded-lg p-2 mb-3 focus:outline-red-500" {...props} />;
-const Btn = ({ children }) => <button className="w-full bg-red-700 text-white rounded-lg p-2 font-semibold hover:bg-red-800">{children}</button>;
-const Msg = ({ m }) => m && <p className={`mb-3 text-sm ${m.ok ? 'text-green-700' : 'text-red-600'}`}>{m.text}</p>;
+
+const Field = ({ label, ...props }) => (
+  <label className="mb-4 block">
+    <span className="mb-1.5 block text-sm font-semibold">{label}</span>
+    <input className="field" {...props} />
+  </label>
+);
+const Btn = ({ busy, children }) => (
+  <button className="btn btn-tomato w-full" disabled={busy}>{busy ? 'Please wait…' : children}</button>
+);
+const Msg = ({ m }) => m ? (
+  <p role="alert" className={`mb-4 rounded-lg px-3 py-2 text-sm ${m.ok ? 'bg-leaf/10 text-leaf' : 'bg-tomato/10 text-tomato-deep'}`}>{m.text}</p>
+) : null;
+const A = ({ to, children }) => (
+  <Link to={to} className="font-semibold text-tomato-deep underline-offset-4 hover:underline">{children}</Link>
+);
 
 function useForm(action) {
-  const [f, setF] = useState({}); const [msg, setMsg] = useState(null);
-  const set = k => e => setF({ ...f, [k]: e.target.value });
+  const [f, setF] = useState({});
+  const [msg, setMsg] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const set = k => e => setF(s => ({ ...s, [k]: e.target.value }));
   const submit = async e => {
-    e.preventDefault(); setMsg(null);
-    try { const m = await action(f); if (m) setMsg({ ok: true, text: m }); } catch (err) { setMsg({ text: err.message }); }
+    e.preventDefault(); setMsg(null); setBusy(true);
+    try { const m = await action(f); if (m) setMsg({ ok: true, text: m }); }
+    catch (err) { setMsg({ text: err.message }); }
+    setBusy(false);
   };
-  return { set, submit, msg };
+  return { set, submit, msg, busy };
 }
 
 export function Login() {
-  const nav = useNavigate(); const [q] = useSearchParams();
-  const { set, submit, msg } = useForm(async f => { saveSession(await api('/auth/login', { method: 'POST', body: f })); nav('/'); });
+  const nav = useNavigate();
+  const [q] = useSearchParams();
+  const { set, submit, msg, busy } = useForm(async f => { saveSession(await api('/auth/login', { method: 'POST', body: f })); nav('/'); });
+  const verified = q.get('verified');
   return (
-    <Card title="Login">
-      {q.get('verified') === '1' && <p className="text-green-700 text-sm mb-3">Email verified! Please log in.</p>}
-      <form onSubmit={submit}><Field type="email" placeholder="Email" required onChange={set('email')} />
-        <Field type="password" placeholder="Password" required onChange={set('password')} /><Msg m={msg} /><Btn>Login</Btn></form>
-      <div className="flex justify-between text-sm mt-3"><Link className="text-red-700" to="/register">Create account</Link><Link className="text-red-700" to="/forgot">Forgot password?</Link></div>
-    </Card>
+    <Shell title="Welcome back" lead="Sign in to build your pizza and track your orders.">
+      {verified === '1' && <Msg m={{ ok: true, text: 'Email confirmed. Sign in to continue.' }} />}
+      {verified === '0' && <Msg m={{ text: 'That confirmation link is invalid or already used.' }} />}
+      <form onSubmit={submit}>
+        <Field label="Email" type="email" autoComplete="email" required onChange={set('email')} />
+        <Field label="Password" type="password" autoComplete="current-password" required onChange={set('password')} />
+        <Msg m={msg} />
+        <Btn busy={busy}>Sign in</Btn>
+      </form>
+      <div className="mt-6 flex flex-wrap justify-between gap-2 text-sm">
+        <span>New here? <A to="/register">Create an account</A></span>
+        <A to="/forgot">Forgot your password?</A>
+      </div>
+    </Shell>
   );
 }
+
 export function Register() {
-  const { set, submit, msg } = useForm(async f => (await api('/auth/register', { method: 'POST', body: f })).message);
+  const { set, submit, msg, busy } = useForm(async f => (await api('/auth/register', { method: 'POST', body: f })).message);
   return (
-    <Card title="Register"><form onSubmit={submit}>
-      <Field placeholder="Name" required onChange={set('name')} /><Field type="email" placeholder="Email" required onChange={set('email')} />
-      <Field type="password" placeholder="Password (8+ chars)" minLength={8} required onChange={set('password')} /><Msg m={msg} /><Btn>Register</Btn></form>
-      <p className="text-sm mt-3 text-center">Have an account? <Link className="text-red-700" to="/login">Login</Link></p></Card>
+    <Shell title="Create your account" lead="We'll email you a link to confirm your address.">
+      <form onSubmit={submit}>
+        <Field label="Name" autoComplete="name" required onChange={set('name')} />
+        <Field label="Email" type="email" autoComplete="email" required onChange={set('email')} />
+        <Field label="Password (at least 8 characters)" type="password" autoComplete="new-password" minLength={8} required onChange={set('password')} />
+        <Msg m={msg} />
+        <Btn busy={busy}>Create account</Btn>
+      </form>
+      <p className="mt-6 text-sm">Already have an account? <A to="/login">Sign in</A></p>
+    </Shell>
   );
 }
+
 export function Forgot() {
-  const { set, submit, msg } = useForm(async f => (await api('/auth/forgot', { method: 'POST', body: f })).message);
+  const { set, submit, msg, busy } = useForm(async f => (await api('/auth/forgot', { method: 'POST', body: f })).message);
   return (
-    <Card title="Forgot password"><form onSubmit={submit}><Field type="email" placeholder="Your email" required onChange={set('email')} /><Msg m={msg} /><Btn>Send reset link</Btn></form>
-      <p className="text-sm mt-3 text-center"><Link className="text-red-700" to="/login">Back to login</Link></p></Card>
+    <Shell title="Reset your password" lead="Enter your email and we'll send you a reset link.">
+      <form onSubmit={submit}>
+        <Field label="Email" type="email" autoComplete="email" required onChange={set('email')} />
+        <Msg m={msg} />
+        <Btn busy={busy}>Send reset link</Btn>
+      </form>
+      <p className="mt-6 text-sm"><A to="/login">Back to sign in</A></p>
+    </Shell>
   );
 }
+
 export function Reset() {
   const { token } = useParams();
-  const { set, submit, msg } = useForm(async f => (await api(`/auth/reset/${token}`, { method: 'POST', body: f })).message);
+  const { set, submit, msg, busy } = useForm(async f => (await api(`/auth/reset/${token}`, { method: 'POST', body: f })).message);
   return (
-    <Card title="Reset password"><form onSubmit={submit}><Field type="password" placeholder="New password (8+ chars)" minLength={8} required onChange={set('password')} /><Msg m={msg} /><Btn>Update password</Btn></form>
-      <p className="text-sm mt-3 text-center"><Link className="text-red-700" to="/login">Go to login</Link></p></Card>
+    <Shell title="Choose a new password" lead="Use at least 8 characters.">
+      <form onSubmit={submit}>
+        <Field label="New password" type="password" autoComplete="new-password" minLength={8} required onChange={set('password')} />
+        <Msg m={msg} />
+        <Btn busy={busy}>Save password</Btn>
+      </form>
+      <p className="mt-6 text-sm"><A to="/login">Go to sign in</A></p>
+    </Shell>
   );
 }
+
 export function AdminLogin() {
   const nav = useNavigate();
-  const { set, submit, msg } = useForm(async f => { saveSession(await api('/auth/admin-login', { method: 'POST', body: f })); nav('/admin'); });
+  const { set, submit, msg, busy } = useForm(async f => { saveSession(await api('/auth/admin-login', { method: 'POST', body: f })); nav('/admin'); });
   return (
-    <Card title="Admin Login"><form onSubmit={submit}><Field type="email" placeholder="Admin email" required onChange={set('email')} />
-      <Field type="password" placeholder="Password" required onChange={set('password')} /><Msg m={msg} /><Btn>Login</Btn></form></Card>
+    <main className="grid min-h-screen place-items-center bg-basil px-6">
+      <div className="w-full max-w-sm rounded-2xl bg-paper p-8">
+        <span className="text-basil"><Logo /></span>
+        <h1 className="mt-8 text-3xl font-extrabold text-basil">Staff sign-in</h1>
+        <p className="mb-6 mt-2 text-mute">Manage orders and stock.</p>
+        <form onSubmit={submit}>
+          <Field label="Email" type="email" autoComplete="username" required onChange={set('email')} />
+          <Field label="Password" type="password" autoComplete="current-password" required onChange={set('password')} />
+          <Msg m={msg} />
+          <Btn busy={busy}>Sign in</Btn>
+        </form>
+      </div>
+    </main>
   );
 }

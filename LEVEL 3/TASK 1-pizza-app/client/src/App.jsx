@@ -1,5 +1,6 @@
-import { Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, Link, NavLink, useNavigate } from 'react-router-dom';
 import { session, clearSession } from './api.js';
+import { Logo } from './PizzaArt.jsx';
 import { Login, Register, Forgot, Reset, AdminLogin } from './pages/Auth.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import Builder from './pages/Builder.jsx';
@@ -10,24 +11,41 @@ function Guard({ role, children }) {
   if (!s.token || s.role !== role) return <Navigate to={role === 'admin' ? '/admin/login' : '/login'} replace />;
   return children;
 }
+
+const tab = ({ isActive }) =>
+  `rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${isActive ? 'bg-white text-basil' : 'text-white/80 hover:text-white'}`;
+
 function Nav() {
-  const nav = useNavigate(); const s = session();
+  const nav = useNavigate();
+  const s = session();
   if (!s.token) return null;
+  const admin = s.role === 'admin';
   return (
-    <header className="bg-red-700 text-white">
-      <div className="max-w-5xl mx-auto flex items-center justify-between p-4">
-        <Link to={s.role === 'admin' ? '/admin' : '/'} className="text-xl font-bold">🍕 Pizzeria</Link>
+    <header className="dark-surface sticky top-0 z-20 bg-basil text-white">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-3">
+        <div className="flex items-center gap-6">
+          <Link to={admin ? '/admin' : '/'} aria-label="Forno home"><Logo /></Link>
+          {admin ? <span className="text-sm text-white/70">Staff</span> : (
+            <nav className="flex gap-1" aria-label="Main">
+              <NavLink to="/" end className={tab}>Menu</NavLink>
+              <NavLink to="/build" className={tab}>Build a pizza</NavLink>
+            </nav>
+          )}
+        </div>
         <div className="flex items-center gap-4 text-sm">
-          <span>Hi, {s.name}</span>
-          <button className="bg-white/20 rounded px-3 py-1 hover:bg-white/30" onClick={() => { clearSession(); nav('/login'); }}>Logout</button>
+          <span className="text-white/80">{s.name}</span>
+          <button className="font-semibold underline-offset-4 hover:underline" onClick={() => { clearSession(); nav(admin ? '/admin/login' : '/login'); }}>
+            Log out
+          </button>
         </div>
       </div>
     </header>
   );
 }
+
 export default function App() {
   return (
-    <div className="min-h-screen bg-orange-50 text-gray-800">
+    <>
       <Nav />
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -40,6 +58,6 @@ export default function App() {
         <Route path="/admin" element={<Guard role="admin"><Admin /></Guard>} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
-    </div>
+    </>
   );
 }

@@ -1,9 +1,10 @@
 import 'dotenv/config';
 import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
+import { connectDB } from './db.js';
 import { User, Inventory, Pizza } from './models.js';
 
-await mongoose.connect(process.env.MONGO_URI);
+await connectDB();
 await User.findOneAndUpdate({ email: process.env.ADMIN_EMAIL.toLowerCase() },
   { name: 'Admin', role: 'admin', verified: true, passwordHash: await bcrypt.hash(process.env.ADMIN_PASSWORD, 10) }, { upsert: true });
 

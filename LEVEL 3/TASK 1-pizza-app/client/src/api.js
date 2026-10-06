@@ -6,7 +6,11 @@ export async function api(path, { method = 'GET', body } = {}) {
     body: body && JSON.stringify(body),
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.message || 'Request failed');
+  if (!res.ok) {
+    throw new Error(data.message || (res.status >= 500
+      ? "Can't reach the server. Make sure the API is running on port 5000."
+      : 'Something went wrong. Try again.'));
+  }
   return data;
 }
 export const session = () => ({ token: localStorage.getItem('token'), role: localStorage.getItem('role'), name: localStorage.getItem('name') });

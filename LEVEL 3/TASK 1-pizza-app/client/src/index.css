@@ -1,1 +1,78 @@
 @import "tailwindcss";
+
+@theme static {
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-sans: "Instrument Sans", system-ui, sans-serif;
+  --font-ticket: "IBM Plex Mono", ui-monospace, monospace;
+
+  --color-tomato: #d63318;
+  --color-tomato-deep: #a82410;
+  --color-basil: #12392b;
+  --color-basil-soft: #1f5a45;
+  --color-leaf: #1f6b43;
+  --color-cheese: #ffc62e;
+  --color-flour: #f3f6ef;
+  --color-paper: #fffffb;
+  --color-ink: #1c2b24;
+  --color-mute: #5d6b64;
+  --color-line: #d9e0d3;
+}
+
+@layer base {
+  body { background: var(--color-flour); color: var(--color-ink); line-height: 1.5; }
+  h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.02em; }
+  :focus-visible { outline: 3px solid var(--color-basil-soft); outline-offset: 2px; }
+  .dark-surface :focus-visible { outline-color: var(--color-cheese); }
+}
+
+@layer components {
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    border: 2px solid transparent; border-radius: 9999px; padding: .65rem 1.4rem;
+    font-weight: 600; line-height: 1.2; cursor: pointer;
+    transition: background-color .15s, color .15s, border-color .15s;
+  }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
+  .btn-sm { padding: .4rem 1rem; font-size: .875rem; }
+  .btn-tomato { background: var(--color-tomato); color: #fff; }
+  .btn-tomato:hover:not(:disabled) { background: var(--color-tomato-deep); }
+  .btn-basil { background: var(--color-basil); color: #fff; }
+  .btn-basil:hover:not(:disabled) { background: var(--color-basil-soft); }
+  .btn-line { border-color: var(--color-basil); color: var(--color-basil); }
+  .btn-line:hover:not(:disabled) { background: var(--color-basil); color: #fff; }
+  .btn-light { border-color: rgb(255 255 255 / .55); color: #fff; }
+  .btn-light:hover { background: #fff; color: var(--color-basil); }
+
+  .field {
+    width: 100%; border: 2px solid var(--color-line); border-radius: .6rem;
+    background: #fff; padding: .6rem .85rem; transition: border-color .15s;
+  }
+  .field:focus { border-color: var(--color-basil); }
+
+  /* tablecloth */
+  .gingham {
+    background-color: #fff;
+    background-image:
+      linear-gradient(90deg, rgb(214 51 24 / .5) 50%, transparent 50%),
+      linear-gradient(rgb(214 51 24 / .5) 50%, transparent 50%);
+    background-size: 56px 56px;
+  }
+
+  /* kitchen ticket with a torn zigzag bottom edge */
+  .ticket-wrap { filter: drop-shadow(0 2px 3px rgb(18 57 43 / .18)); }
+  .ticket {
+    --s: 9px;
+    background: var(--color-paper);
+    -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / calc(2 * var(--s)) 100%;
+    mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / calc(2 * var(--s)) 100%;
+  }
+
+  /* motion: toppings drop onto the pizza when added; live dot pulses on the current order step */
+  .topping-drop { animation: drop .45s cubic-bezier(.3, 1.5, .5, 1) both; transform-box: fill-box; transform-origin: center; }
+  @keyframes drop { from { opacity: 0; transform: translateY(-18px) scale(1.25); } to { opacity: 1; transform: none; } }
+  .live-dot { animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 50% { transform: scale(1.5); opacity: .55; } }
+  @media (prefers-reduced-motion: reduce) {
+    .topping-drop, .live-dot { animation: none; }
+  }
+}
