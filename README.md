@@ -14,8 +14,6 @@ This repository holds all my internship tasks, from static pages to a full-stack
 | 2 | 4 | [Login Authentication System](#level-2--task-4-login-authentication-system) | HTML, CSS, JavaScript |
 | 3 | 1 | [Pizza Delivery Full-Stack App (Forno)](#level-3--task-1-pizza-delivery-full-stack-app) | React, Node, Express, MongoDB, Razorpay |
 
-- **Demo videos:** _add links_
-- **LinkedIn post:** _add link_
 
 ## Repository structure
 
